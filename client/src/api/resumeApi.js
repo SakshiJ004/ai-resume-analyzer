@@ -1,17 +1,19 @@
 import axiosInstance from './axiosInstance';
 
+// Upload resume file
 export const uploadResumeApi = (formData) =>
     axiosInstance.post('/resume/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     });
 
-export const getAllResumesApi = () => axiosInstance.get('/resume/all');
-export const getResumeApi = (id) => axiosInstance.get(`/resume/${id}`);
-export const deleteResumeApi = (id) => axiosInstance.delete(`/resume/${id}`);
+// Get all resumes for current user
+export const getAllResumesApi = () =>
+    axiosInstance.get('/resume/all');
 
-export const analyzeResumeApi = (data) => axiosInstance.post('/analysis/analyze', data);
-export const getAnalysisApi = (resumeId) => axiosInstance.get(`/analysis/${resumeId}`);
-export const improveResumeApi = (data) => axiosInstance.post('/analysis/improve', data);
+// Get single resume by ID
+export const getResumeApi = (id) =>
+    axiosInstance.get(`/resume/${id}`);
 
-export const matchJobApi = (data) => axiosInstance.post('/job/match', data);
-export const generateCoverLetterApi = (data) => axiosInstance.post('/job/cover-letter', data);
+// Delete resume
+export const deleteResumeApi = (id) =>
+    axiosInstance.delete(`/resume/${id}`);

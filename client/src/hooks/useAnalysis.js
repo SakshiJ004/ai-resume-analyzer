@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { analyzeResumeApi, getAnalysisApi, improveResumeApi } from '../api/resumeApi';
+import { analyzeResumeApi, getAnalysisApi, improveResumeApi } from '../api/analysisApi';
 import toast from 'react-hot-toast';
 
 const useAnalysis = () => {

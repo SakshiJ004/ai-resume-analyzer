@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { getAllResumesApi, generateCoverLetterApi } from '../api/resumeApi';
+import { getAllResumesApi } from '../api/resumeApi';
+import { generateCoverLetterApi } from '../api/analysisApi';
 import Navbar from '../components/common/Navbar';
 import Loader from '../components/common/Loader';
 
