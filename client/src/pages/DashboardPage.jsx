@@ -197,8 +197,8 @@ const DashboardPage = ({ analysis: propAnalysis, jobMatch: propJobMatch, resume:
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition ${activeTab === tab.id
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white'
                                 }`}
                         >
                             {tab.label}
@@ -303,37 +303,163 @@ const DashboardPage = ({ analysis: propAnalysis, jobMatch: propJobMatch, resume:
                 )}
 
                 {activeTab === 'improve' && (
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                         {!improvedContent ? (
-                            <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-                                <p className="text-3xl mb-3">✨</p>
-                                <p className="text-white font-semibold mb-2">AI Resume Improver</p>
-                                <p className="text-gray-400 text-sm mb-6">Let AI rewrite your summary, experience, and skills with better language and metrics</p>
-                                <button onClick={handleImprove} disabled={improving} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold px-8 py-3 rounded-xl transition">
-                                    {improving ? '⏳ Improving...' : '✨ Improve My Resume'}
+                            <div className="bg-gray-900 border border-gray-800 rounded-xl p-10 text-center">
+                                <div className="text-5xl mb-4">✨</div>
+                                <h3 className="text-xl font-bold text-white mb-2">AI Resume Improver</h3>
+                                <p className="text-gray-400 text-sm mb-2 max-w-md mx-auto">
+                                    Our AI will rewrite your entire resume to be fully ATS-optimized with:
+                                </p>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-lg mx-auto mb-6 text-left">
+                                    {['Quantified achievements', 'ATS keywords', 'Action verbs', 'Proper formatting', 'Skill categorization', 'Score improvement'].map(f => (
+                                        <div key={f} className="flex items-center gap-2 text-xs text-gray-300">
+                                            <span className="text-green-400">✓</span>{f}
+                                        </div>
+                                    ))}
+                                </div>
+                                <button
+                                    onClick={handleImprove}
+                                    disabled={improving}
+                                    className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold px-10 py-3 rounded-xl transition"
+                                >
+                                    {improving ? (
+                                        <span className="flex items-center gap-2">
+                                            <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                                            Improving Resume...
+                                        </span>
+                                    ) : '✨ Improve My Resume'}
                                 </button>
                             </div>
                         ) : (
-                            <>
+                            <div className="space-y-5">
+
+                                {/* Score Improvement Banner */}
+                                {improvedContent.atsScore && (
+                                    <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-5 flex items-center justify-between">
+                                        <div>
+                                            <p className="text-green-400 font-bold text-lg">🎯 ATS Score Improved!</p>
+                                            <p className="text-gray-400 text-sm">Your resume is now more ATS-friendly</p>
+                                        </div>
+                                        <div className="flex items-center gap-4 text-center">
+                                            <div>
+                                                <div className="text-2xl font-black text-red-400">{improvedContent.atsScore.before}</div>
+                                                <div className="text-xs text-gray-500">Before</div>
+                                            </div>
+                                            <div className="text-gray-500 text-xl">→</div>
+                                            <div>
+                                                <div className="text-2xl font-black text-green-400">{improvedContent.atsScore.after}</div>
+                                                <div className="text-xs text-gray-500">After</div>
+                                            </div>
+                                            <div className="bg-green-500/20 text-green-400 text-sm font-bold px-3 py-1 rounded-full">
+                                                {improvedContent.atsScore.improvement}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Key Improvements */}
                                 <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                                    <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3">Key Changes Made</h3>
-                                    <div className="space-y-2">
-                                        {improvedContent.keyChanges?.map((c, i) => (
-                                            <div key={i} className="flex gap-2 text-sm text-gray-300"><span className="text-green-400">✓</span>{c}</div>
+                                    <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-4">✅ Key Improvements Made</h3>
+                                    <div className="grid md:grid-cols-2 gap-2">
+                                        {improvedContent.keyImprovements?.map((c, i) => (
+                                            <div key={i} className="flex gap-2 text-sm text-gray-300 bg-gray-800/50 rounded-lg p-2.5">
+                                                <span className="text-green-400 flex-shrink-0">✓</span>{c}
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
-                                {[
-                                    { label: 'Improved Summary', content: improvedContent.improvedSummary },
-                                    { label: 'Improved Experience', content: improvedContent.improvedExperience },
-                                    { label: 'Improved Skills', content: improvedContent.improvedSkills },
-                                ].map(sec => (
-                                    <div key={sec.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                                        <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3">{sec.label}</h3>
-                                        <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">{sec.content}</p>
+
+                                {/* Professional Summary */}
+                                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">📝 Professional Summary</h3>
+                                        <button onClick={() => { navigator.clipboard.writeText(improvedContent.professionalSummary); toast.success('Copied!'); }}
+                                            className="text-xs text-gray-500 hover:text-gray-300 border border-gray-700 px-2 py-1 rounded">Copy</button>
                                     </div>
-                                ))}
-                            </>
+                                    <p className="text-gray-200 text-sm leading-relaxed bg-gray-800/50 rounded-lg p-4 border-l-4 border-indigo-500">
+                                        {improvedContent.professionalSummary}
+                                    </p>
+                                </div>
+
+                                {/* Technical Skills */}
+                                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                    <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-4">🛠 Technical Skills (Categorized)</h3>
+                                    <div className="space-y-3">
+                                        {improvedContent.technicalSkillsFormatted && Object.entries(improvedContent.technicalSkillsFormatted).map(([cat, skills]) => (
+                                            skills && (
+                                                <div key={cat} className="flex gap-3">
+                                                    <span className="text-gray-500 text-sm w-24 flex-shrink-0 font-medium">{cat}:</span>
+                                                    <span className="text-gray-300 text-sm">{skills}</span>
+                                                </div>
+                                            )
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Core Skills Tags */}
+                                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                    <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3">⚡ Core Skills (ATS Tags)</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {improvedContent.coreSkills?.map(s => (
+                                            <span key={s} className="bg-indigo-500/15 text-indigo-300 border border-indigo-500/20 px-3 py-1.5 rounded-full text-sm font-medium">{s}</span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Experience Bullets */}
+                                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider">💼 Experience (AI Rewritten)</h3>
+                                        <button onClick={() => { navigator.clipboard.writeText(improvedContent.experienceBullets?.join('\n')); toast.success('Copied!'); }}
+                                            className="text-xs text-gray-500 hover:text-gray-300 border border-gray-700 px-2 py-1 rounded">Copy All</button>
+                                    </div>
+                                    <div className="space-y-3 bg-gray-800/30 rounded-lg p-4">
+                                        {improvedContent.experienceBullets?.map((b, i) => (
+                                            <div key={i} className="flex gap-3 text-sm text-gray-200 leading-relaxed border-l-2 border-indigo-500/30 pl-3">
+                                                {b}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Projects */}
+                                {improvedContent.projectHighlights?.length > 0 && (
+                                    <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                        <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-4">🚀 Project Highlights</h3>
+                                        <div className="space-y-2 bg-gray-800/30 rounded-lg p-4">
+                                            {improvedContent.projectHighlights.map((p, i) => (
+                                                <div key={i} className="text-sm text-gray-200 leading-relaxed border-l-2 border-teal-500/30 pl-3">{p}</div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Education */}
+                                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                    <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3">🎓 Education</h3>
+                                    <p className="text-gray-300 text-sm">{improvedContent.educationFormatted}</p>
+                                </div>
+
+                                {/* ATS Keywords Added */}
+                                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                    <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3">🔑 ATS Keywords Added</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {improvedContent.atsKeywordsAdded?.map(k => (
+                                            <span key={k} className="bg-green-500/10 text-green-300 border border-green-500/20 px-3 py-1 rounded-full text-sm">{k}</span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Redo button */}
+                                <button
+                                    onClick={handleImprove}
+                                    disabled={improving}
+                                    className="w-full border border-indigo-500/30 hover:border-indigo-500 text-indigo-400 hover:text-indigo-300 py-3 rounded-xl text-sm font-semibold transition"
+                                >
+                                    {improving ? '⏳ Re-improving...' : '🔄 Re-generate Improvement'}
+                                </button>
+                            </div>
                         )}
                     </div>
                 )}
